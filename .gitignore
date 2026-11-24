@@ -1,0 +1,11 @@
+node_modules
+/capturas-proyecto
+*.png
+*.jpg
+*.jpeg
+*.mov
+*.mp4
+*.pdf
+*.xlsx
+*.docx
+.DS_Store

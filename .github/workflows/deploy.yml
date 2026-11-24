@@ -2,13 +2,12 @@ name: Deploy API a AWS
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   workflow_dispatch:
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-
     steps:
       - name: Descargar el codigo
         uses: actions/checkout@v4
@@ -32,11 +31,13 @@ jobs:
           docker build -t $REGISTRY/$REPOSITORY:${{ github.sha }} -t $REGISTRY/$REPOSITORY:latest .
           docker push --all-tags $REGISTRY/$REPOSITORY
 
-      - name: Desplegar en AWS App Runner
+      - name: Desplegar en ECS Express Mode
+        env:
+          REGISTRY: ${{ steps.ecr.outputs.registry }}
+          REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
         run: |
-          aws apprunner start-deployment --service-arn ${{ secrets.APPRUNNER_SERVICE_ARN }}
-          sleep 20
-          until [ "$(aws apprunner describe-service --service-arn ${{ secrets.APPRUNNER_SERVICE_ARN }} --query Service.Status --output text)" = "RUNNING" ]; do
-            echo "desplegando..."
-            sleep 10
-          done
+          aws ecs update-express-gateway-service \
+            --service-arn ${{ secrets.ECS_SERVICE_ARN }} \
+            --primary-container "image=$REGISTRY/$REPOSITORY:${{ github.sha }},containerPort=8080"
+          sleep 30
+          aws ecs wait services-stable --cluster default --services ${{ secrets.ECS_SERVICE_ARN }}

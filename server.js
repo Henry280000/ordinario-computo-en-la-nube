@@ -9,9 +9,9 @@ let tareas = [
   { id: 1, titulo: 'Aprender Docker', hecho: true },
   { id: 2, titulo: 'Desplegar en Azure', hecho: false }
 ];
-
+// modificacion de la version 1 a la version 2
 app.get('/', (req, res) => {
-  res.json({ mensaje: 'API funcionando - version 1', version: '1.0' });
+  res.json({ mensaje: 'API funcionando - version 2', version: '2.0' });
 });
 
 app.get('/tareas', (req, res) => {
@@ -26,6 +26,10 @@ app.post('/tareas', (req, res) => {
   const nueva = { id: tareas.length + 1, titulo, hecho: false };
   tareas.push(nueva);
   res.status(201).json(nueva);
+});
+
+app.get('/saludo', (req, res) => {
+  res.json({ saludo: 'Hola desde el pipeline de GitHub Actions' });
 });
 
 app.listen(PORT, () => {

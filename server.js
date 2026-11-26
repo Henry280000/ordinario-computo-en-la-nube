@@ -9,7 +9,7 @@ let tareas = [
   { id: 1, titulo: 'Aprender Docker', hecho: true },
   { id: 2, titulo: 'Desplegar en Azure', hecho: false }
 ];
-// modificacion de la version 1 a la version 2
+// modificacion de la version 2 a la version 3
 app.get('/', (req, res) => {
   res.json({ mensaje: 'API funcionando - version 3', version: '3.0' });
 });
